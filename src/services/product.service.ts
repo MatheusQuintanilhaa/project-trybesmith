@@ -1,7 +1,7 @@
 import { Product } from '../types/Product';
 import { ServiceResponse } from '../types/ServiceResponse';
 import ProductModel, {
-  ProductInputtableTypes,
+  ProductInputtableTypes, ProductSequelizeModel,
 } from '../database/models/product.model';
 
 function validateParams({
@@ -16,6 +16,11 @@ function validateParams({
   return null;
 }
 
+async function myList(): Promise<ServiceResponse<ProductSequelizeModel[]>> {
+  const anyProducts = await ProductModel.findAll();
+
+  return { status: 'SUCCESSFUL', data: anyProducts };
+}
 async function createAnyProduct(
   product: ProductInputtableTypes,
 ): Promise<ServiceResponse<Product>> {
@@ -37,4 +42,5 @@ async function createAnyProduct(
 
 export default {
   createAnyProduct,
+  myList,
 };
