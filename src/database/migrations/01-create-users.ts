@@ -32,3 +32,5 @@ export default {
     return queryInterface.dropTable('users');
   }
 };
+
+// first commit
