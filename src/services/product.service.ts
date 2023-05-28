@@ -6,14 +6,28 @@ import ProductModel, {
 
 function validateParams({
   name,
-  price,
-  orderId,
-}: ProductInputtableTypes): string | null {
-  if (!name) return 'Name is required';
-  if (!price) return 'Price is required';
-  if (!orderId) return 'Order Id is required';
+}: ProductInputtableTypes): { status: string; message: string } {
+  if (!name) return { status: 'INVALID_DATA', message: '"name" is required' };
+  if (typeof name !== 'string') return { status: 'UN_ENTITY', message: '"name" must be a string' };
+  if (name.length < 3) {
+    return { status: 'UN_ENTITY', message: '"name" length must be at least 3 characters long' };
+  }
 
-  return null;
+  return { status: '', message: '' };
+}
+
+function validatePriceParams({
+  price,
+}: ProductInputtableTypes): { status: string; message: string } {
+  if (!price) return { status: 'INVALID_DATA', message: '"price" is required' };
+  if (typeof price !== 'string') {
+    return { status: 'UN_ENTITY', message: '"price" must be a string' };
+  }
+  if (price.length < 3) {
+    return { status: 'UN_ENTITY', message: '"price" length must be at least 3 characters long' };
+  }
+
+  return { status: '', message: '' };
 }
 
 async function myList(): Promise<ServiceResponse<ProductSequelizeModel[]>> {
@@ -21,23 +35,32 @@ async function myList(): Promise<ServiceResponse<ProductSequelizeModel[]>> {
 
   return { status: 'SUCCESSFUL', data: anyProducts };
 }
+
 async function createAnyProduct(
   product: ProductInputtableTypes,
 ): Promise<ServiceResponse<Product>> {
   let responseService: ServiceResponse<Product>;
 
-  const error = validateParams(product);
+  const nameError = validateParams(product);
 
-  if (error) {
-    responseService = { status: 'INVALID_DATA', data: { message: error } };
+  if (nameError.status) {
+    const nameMessage = nameError.message;
+    responseService = { status: nameError.status, data: { message: nameMessage } };
     return responseService;
   }
 
-  const newProduct = await ProductModel.create(product);
+  const ValueGlitch = validatePriceParams(product);
 
-  responseService = { status: 'SUCCESSFUL', data: newProduct.dataValues };
+  if (ValueGlitch.status) {
+    const PricingNotice = ValueGlitch.message;
+    responseService = { status: ValueGlitch.status, data: { message: PricingNotice } };
+    return responseService;
+  }
 
-  return responseService;
+  const BuildProduce = await ProductModel.create(product);
+  const { id, name, price } = BuildProduce.dataValues;
+
+  return { status: 'SUCCESSFUL', data: { id, name, price } };
 }
 
 export default {

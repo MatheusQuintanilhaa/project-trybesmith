@@ -2,8 +2,8 @@ import { Product } from './Product';
 
 export type Order = {
   id: number;
-  userId: string;
-  productId?: number[];
+  userId: number;
+  productId?: number[] | Product[];
 };
 
 export type GetProductsByOrder = {

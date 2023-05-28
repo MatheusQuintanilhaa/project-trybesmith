@@ -8,7 +8,7 @@ async function myList(_req: Request, res: Response) {
   res.status(200).json(serviceResponse.data);
 }
 
-const create = async (req: Request, res: Response): Promise<Response> => {
+const build = async (req: Request, res: Response): Promise<Response> => {
   const { name, price, orderId } = req.body;
 
   const serviceResponse = await productService.createAnyProduct({ name, price, orderId });
@@ -21,6 +21,6 @@ const create = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export default {
-  create,
+  build,
   myList,
 };

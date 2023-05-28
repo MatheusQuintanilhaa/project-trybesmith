@@ -4,7 +4,7 @@ import { GetProductsByOrder, OrderWithProductIds } from '../types/Order';
 
 async function anyProductsByOrder(): Promise<ServiceResponse<OrderWithProductIds[]>> {
   const orderArray = await OrderModel.findAll({ include: 'productIds' });
-
+  
   const orderValueData = orderArray.map((order) => order
     .dataValues) as unknown as GetProductsByOrder[];
 
